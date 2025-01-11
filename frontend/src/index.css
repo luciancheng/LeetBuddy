@@ -1,68 +1,119 @@
+/* index.css for global sytling */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=MedievalSharp&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+/* Tailwind imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Global variables here - like colours, standard padding*/
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+ --color-black-1: #0F0F0F;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+ --color-gray-1: #222222;
+ --color-gray-2: #262626;
+ --color-gray-3: #333333;
+ --color-gray-4: #353535;
+ --color-gray-5: #3C3C3C;
+ --color-gray-6: #4C4C57;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+ --color-white-1: #FFFFFF;
+ --color-white-2: #F5F5F5;
+ --color-white-3: #ECEBEB;
+ --color-white-4: #9F9F9F;
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+ --color-blue-1: #0C69CC;
+ 
+ --color-green-1: #27B140;
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+ --color-gold-1: #FFA116;
+ --color-gold-2: #7e510d;
+ --color-gold-3: #2C2110;
+
+ --color-red-1: #ff1616;
+ --color-red-2: #460d0d;
+
+ --corner-radius: 8px;
+ --transitionTime: 0s;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+* {
+    margin: 0px;
+    box-sizing: border-box;
+    font-family: "Inter";
+    color: var(--color-white-1);
   }
-  a:hover {
-    color: #747bff;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
-  button {
-    background-color: #f9f9f9;
-  }
+
+.app {
+    background-color: var(--color-black-1);
 }
+
+.tab-button {
+    border-radius: var(--corner-radius);
+    background-color: var(--color-gray-1);
+    color: var(--color-white-3); 
+    font-size: 14px;
+    padding: 0.4rem 0.75rem;
+    transition: var(--transitionTime);
+}
+
+.tab-button:hover {
+   background-color: var(--color-gray-3);
+}
+
+.main-display-box {
+    border-radius: var(--corner-radius);
+    background-color: var(--color-gray-2);
+    overflow: hidden;
+}
+
+.main-display-box-header {
+    background-color: var(--color-gray-3);
+}
+
+/* Dev class - for showing borders on boxes */
+.show-border {
+    border: 2px solid pink;
+}
+
+.wrong-tab-display {
+    background-color: var(--color-black-1);
+    width: 400px;
+    height: 600px;
+    text-align: center;
+}
+
+/* Scroll bar */
+/* Style the scrollbar */
+::-webkit-scrollbar {
+    width: 4px; /* Width of the vertical scrollbar */
+    height: 12px; /* Height of the horizontal scrollbar */
+  }
+  
+  /* Style the track (the part the thumb slides within) */
+  ::-webkit-scrollbar-track {
+    background-color: var(--color-black-1); /* Light grey background */
+    border-radius: 10px;
+  }
+  
+  /* Style the thumb (the draggable part of the scrollbar) */
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-gray-5); /* Dark grey color */
+    border-radius: 10px;
+  }
+  
+  /* Hover effect for the thumb */
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Darker grey when hovered */
+  }
+
+  .leetbuddy-icon-shadow {
+    filter: drop-shadow(0 0 5rem #9f9f9fb3);
+  }
