@@ -31,8 +31,7 @@ app.listen(port, () => {
 
 // routing
 // LLM API ROUTING to all /LLM endpoints
-// not setup yet but this will be the main API route
-//app.use("/LLM", LLM_API_ROUTES);
+app.use("/LLM", LLM_API_ROUTES);
 
 // 404 error catching
 app.use((req, res) => {
