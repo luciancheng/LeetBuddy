@@ -1,7 +1,7 @@
 import Chat from "./tabs/Chat/Chat";
-import Whiteboard from "./tabs/Whiteboard/WhiteBoard";
+import Whiteboard from "./tabs/Whiteboard/Whiteboard";
 import { useState, useEffect, useContext } from "react";
-import { Context } from './store';
+import { Context } from './Store';
 import { FaDisplay, FaDrawPolygon } from "react-icons/fa6";
 import laptopLogo from "./assets/LBLOGOlaptop.png";
 

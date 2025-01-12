@@ -3,7 +3,7 @@ import { Tldraw, DefaultSizeStyle, exportToBlob } from 'tldraw';
 import 'tldraw/tldraw.css';
 import { FaShareFromSquare, FaDrawPolygon } from "react-icons/fa6";
 import { useRef, useContext, useState } from 'react';
-import { Context } from '../../store';
+import { Context } from '../../Store';
 
 const Whiteboard = () => {
     DefaultSizeStyle.setDefaultValue('s');
