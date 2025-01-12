@@ -1,5 +1,6 @@
 const { CohereClientV2 } = require("cohere-ai");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { createClient } = require('redis');
 
 // API Info (keep .env private)
 const cohere = new CohereClientV2({
@@ -24,7 +25,13 @@ const geminiModel = genAI.getGenerativeModel({
 // };
 
 // Chat Storage
-const cohereChatHistories = new Map();
+const cohereChatHistories = createClient();
+cohereChatHistories.on('error', err => console.log('Redis Client Error', err));
+
+// Connect when the module is imported
+(async () => {
+  await cohereChatHistories.connect();
+})();
 
 // Instructions
 const cohereInstructions = `Carefully read the Context provided above. It contains information about a programming problem.

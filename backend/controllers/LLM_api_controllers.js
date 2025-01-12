@@ -26,31 +26,46 @@ const AIGeneration = async (req, res) => {
     prompt += `User Question: ${question}\n\n`;
     // Use Cohere for text
     if (!image) {
-      // Initialize chatHistory for cohere context
-      if (!cohereChatHistories.has(sessionID)) {
-        cohereChatHistories.set(
-          sessionID,
-          JSON.parse(JSON.stringify(cohereHistoryInit))
+      let cohereChatHistory = [];
+      const existingHistory = await cohereChatHistories.lRange(
+        sessionID,
+        0,
+        -1
+      );
+
+      if (!existingHistory || existingHistory.length === 0) {
+        // Initialize with default history
+        cohereChatHistory = JSON.parse(JSON.stringify(cohereHistoryInit));
+
+        // Store initial history
+        const serializedInit = cohereHistoryInit.map((msg) =>
+          JSON.stringify(msg)
         );
+        await cohereChatHistories.rPush(sessionID, ...serializedInit);
+      } else {
+        cohereChatHistory = existingHistory.map((msg) => JSON.parse(msg));
       }
-      const cohereChatHistory = cohereChatHistories.get(sessionID);
-      cohereChatHistory.push({
-        role: "user",
-        content: prompt,
-      });
+
+      // Add new user message to the history array
+      cohereChatHistory.push({ role: "user", content: prompt });
+
+      // Get Cohere response with complete history
       const result = await cohere.chat({
         model: cohereModel,
         messages: cohereChatHistory,
       });
-      response = result.message.content;
-      response = response[0].text;
+      response = result.message.content[0].text;
 
-      // Push response to history
-      cohereChatHistory.push({
-        role: "assistant",
-        content: response,
-      });
-      // Use Gemini for Images
+      // Push just the new messages
+      const serializedNewMessages = [
+        JSON.stringify({ role: "user", content: prompt }),
+        JSON.stringify({ role: "assistant", content: response }),
+      ];
+
+      await cohereChatHistories.rPush(sessionID, ...serializedNewMessages);
+      await cohereChatHistories.expire(sessionID, 3600);
+
+    // Use Gemini for Images
     } else {
       prompt += `Instructions: ${geminiInstructions}`;
       const prompt_parts = [
