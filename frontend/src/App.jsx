@@ -14,6 +14,7 @@ function App() {
 
   const { pageData } = useContext(Context);
   const [page, setPage] = pageData;
+  
   const [currentURL, setCurrentURL] = useState("");
   const [isTargetPage, setIsTargetPage] = useState(false);
 
