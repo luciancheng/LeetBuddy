@@ -43,6 +43,7 @@ const AIGeneration = async (req, res) => {
         messages: cohereChatHistory,
       });
       response = result.message.content;
+      response = response[0].text;
 
       // Push response to history
       cohereChatHistory.push({
