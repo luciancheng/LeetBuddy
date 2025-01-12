@@ -75,11 +75,11 @@ const Chat = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         if (inputtext === "") {
             return;
         }
-
+    
         const textarea = e.target.querySelector('.chat-input-textbox');
         if (textarea) {
             try {
@@ -88,67 +88,66 @@ const Chat = () => {
                 console.log("error");
             }
         }
-
+    
+        let currentSessionKey = sessionKey;
+    
         // Get the current active tab's URL
         if (!IN_DEV_MODE) {
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                const currentUrl = tabs[0]?.url; // Get the URL of the active tab
-                if (!currentUrl) {
-                    console.error("Could not retrieve the current tab's URL.");
-                    return;
-                }
-        
-                // Check if the URL matches the LeetCode problem regex
-                const regex = /^https:\/\/leetcode\.com\/problems\/([a-zA-Z][a-zA-Z-]*)/;
-                const match = currentUrl.match(regex);
-        
-                if (match) {
-                    const newProblemSlug = match[1];
-                    console.log("Matched LeetCode problem:", newProblemSlug);
-        
-                    // Compare with the current problem
-                    if (newProblemSlug !== problem) {
-                        console.log("New problem");
-                        
-                        // Update the problem state
-                        setProblem(newProblemSlug);
-        
-                        // Generate a new key
-                        let key = sessionStorage.getItem('sessionKey');
-                        key = uuidv4();
-                        if (!key) {
-                          
-                          sessionStorage.setItem('sessionKey', key);
-                        }
-                        setSessionKey(key); 
-                        console.log("Generated new key:", key);
-        
-                    } else {
-                        console.log("problem is the same");
+            await new Promise((resolve) => {
+                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                    const currentUrl = tabs[0]?.url;
+                    if (!currentUrl) {
+                        console.error("Could not retrieve the current tab's URL.");
+                        resolve();
+                        return;
                     }
-                } else {
-                    console.error("The current tab is not a LeetCode problem page.");
-                }
+            
+                    const regex = /^https:\/\/leetcode\.com\/problems\/([a-zA-Z][a-zA-Z-]*)/;
+                    const match = currentUrl.match(regex);
+            
+                    if (match) {
+                        const newProblemSlug = match[1];
+                        
+                        if (newProblemSlug !== problem) {
+                            setProblem(newProblemSlug);
+                            
+                            const key = uuidv4();
+                            sessionStorage.setItem('sessionKey', key);
+                            setSessionKey(key);
+                            currentSessionKey = key;
+                            console.log("Generated new key:", key);
+                        }
+                    }
+                    resolve();
+                });
             });
-        }        
-
+        }
+    
         const pageText = await collectPageContent();
-
+    
         let displayinputtext = inputtext;
         if (base64image !== "") {
-            displayinputtext += "\n\n + 1 Image"
+            displayinputtext += "\n\n + 1 Image";
         } 
-
+    
         setMessages((prevMessages) => [...prevMessages, displayinputtext]);
-        e.target.style.height = 'auto'; // Adjust height dynamically
-
+        e.target.style.height = 'auto';
+    
         setCanEdit(false);
         setMessages((prevMessages) => [...prevMessages, generationflag]);
         
         let formattedimage = null;
-        if (base64image.length > 0) formattedimage = base64image?.replace(/^data:image\/\w+;base64,/, '');
-        const body = { question: inputtext, image: formattedimage, context: pageText, sessionID : sessionKey };
-
+        if (base64image.length > 0) {
+            formattedimage = base64image?.replace(/^data:image\/\w+;base64,/, '');
+        }
+    
+        const body = { 
+            question: inputtext, 
+            image: formattedimage, 
+            context: pageText,
+            ...(currentSessionKey && { sessionID: currentSessionKey })
+        };
+    
         setBase64image("");
         fetch(import.meta.env.VITE_API_URL + `/LLM`, {
             method: 'POST',
@@ -170,7 +169,7 @@ const Chat = () => {
                 setMessages((prevMessages) => [...prevMessages, "Error generating response. Try again."]);
                 setCanEdit(true);
             });
-
+    
         setInputtext("");
     };
 
