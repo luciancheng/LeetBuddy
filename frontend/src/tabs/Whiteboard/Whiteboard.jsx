@@ -45,28 +45,14 @@ const Whiteboard = () => {
             opts: { background: false },
         });
         
-        // uses the editor reference to export image
-        // const link = document.createElement('a');
-        // link.href = window.URL.createObjectURL(blob);
-        // link.download = 'canvas-image.png';
-        // link.click();
 
         // Convert the blob to base64 string
         const base64 = await convertBlobToBase64(blob);
+
+        // set base 64 image and change page back to chat
         setBase64image(base64);
         setIsExporting(false);
         setPage("chat");
-
-        // send base64 along with other information back to chat tab
-        
-
-        // Now you have the base64 string
-        //console.log(base64); // You can log or use this string as needed
-
-        // Example: You can create an image element using the base64 string
-        //const img = new Image();
-        //img.src = base64;
-        //document.body.appendChild(img); // Display the image in the document
     };
 
     const components = {
