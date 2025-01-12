@@ -2,7 +2,7 @@ import './Chat.css';
 import { FaDisplay, FaTrashCan } from "react-icons/fa6";
 import { useState, useRef, useEffect, useContext } from 'react';
 import LLMOutputDisplay from '../../components/LLMOutputDisplay';
-import { Context } from '../../store';
+import { Context } from '../../Store';
 import { collectPageContent } from './collectPageContent.js';
 import laptopLogo from '../../assets/LBLOGOlaptop.png';
 import { v4 as uuidv4 } from 'uuid';
