@@ -1,5 +1,5 @@
 import Chat from "./tabs/Chat/Chat";
-import Whiteboard from "./tabs/whiteboard/whiteboard";
+import Whiteboard from "./tabs/Whiteboard/Whiteboard";
 import { useState, useEffect, useContext } from "react";
 import { Context } from './store';
 import { FaDisplay, FaDrawPolygon } from "react-icons/fa6";
