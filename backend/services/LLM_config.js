@@ -1,4 +1,4 @@
-const { CohereClientV2 } = require('cohere-ai');
+const { CohereClientV2 } = require("cohere-ai");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 // API Info (keep .env private)
@@ -33,7 +33,7 @@ Use all of this information to answer the user's question. Provide code examples
 Explain your reasoning briefly before providing the final answer or code example. If the context is unclear, incomplete, or contains conflicting information, state that clearly.
 Be brief with your response.`;
 
-const cohereHistoryInit = [{"role": "system", "content": cohereInstructions}]
+const cohereHistoryInit = [{ role: "system", content: cohereInstructions }];
 
 const geminiInstructions = `Carefully read the Context provided above. It contains information about a programming problem.
 This information may include (but is not limited to) the problem title, description, constraints, a follow-up, hints, programming language, user's code, and errors encountered.
