@@ -7,7 +7,7 @@ const {
   geminiModel,
   cohereHistoryInit,
   geminiInstructions,
-  cohereChatHistories,
+  getRedisClient,
 } = require("../services/LLM_config.js");
 
 // Main AI Response code.
@@ -15,8 +15,18 @@ const AIGeneration = async (req, res) => {
   try {
     const { question, image, context, sessionID } = req.body;
 
+    const redisClient = await getRedisClient();
+
+    if (!redisClient) {
+      throw new Error("Redis client not initialized");
+    }
+
     if (!question) {
       return res.status(400).send("User Question is required.");
+    }
+
+    if (!sessionID) {
+      return res.status(400).send("Session ID is required.");
     }
 
     // Create the prompt and push the prompt to history
@@ -27,22 +37,18 @@ const AIGeneration = async (req, res) => {
     // Use Cohere for text
     if (!image) {
       let cohereChatHistory = [];
-      const existingHistory = await cohereChatHistories.lRange(
-        sessionID,
-        0,
-        -1
-      );
+      const redisKey = `chat:${sessionID}`;
+      const existingHistory = await redisClient.lRange(redisKey, 0, -1);
 
       if (!existingHistory || existingHistory.length === 0) {
-        // Initialize with default history
+        // Setup the Cohere inital instructions
         cohereChatHistory = JSON.parse(JSON.stringify(cohereHistoryInit));
-
-        // Store initial history
         const serializedInit = cohereHistoryInit.map((msg) =>
           JSON.stringify(msg)
         );
-        await cohereChatHistories.rPush(sessionID, ...serializedInit);
+        await redisClient.rPush(redisKey, ...serializedInit);
       } else {
+        // Get the current chat history
         cohereChatHistory = existingHistory.map((msg) => JSON.parse(msg));
       }
 
@@ -62,10 +68,10 @@ const AIGeneration = async (req, res) => {
         JSON.stringify({ role: "assistant", content: response }),
       ];
 
-      await cohereChatHistories.rPush(sessionID, ...serializedNewMessages);
-      await cohereChatHistories.expire(sessionID, 3600);
+      await redisClient.rPush(redisKey, ...serializedNewMessages);
+      await redisClient.expire(redisKey, 3600);
 
-    // Use Gemini for Images
+      // Use Gemini for Images
     } else {
       prompt += `Instructions: ${geminiInstructions}`;
       const prompt_parts = [

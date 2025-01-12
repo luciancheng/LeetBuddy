@@ -2,14 +2,14 @@ version: '3.8'
 
 services:
   backend:
-    build: ./LeetAIBackend
+    build: ./backend
     user: node
     ports:
       - "5000:5000"
     env_file:
-      - ./LeetAIBackend/.env
+      - ./backend/.env
     volumes:
-      - ./LeetAIBackend:/app
+      - ./backend:/app
       - /app/node_modules
     depends_on:
       redis:
